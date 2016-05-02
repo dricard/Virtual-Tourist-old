@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		21C739ED1CD78CFA0075C141 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C739EC1CD78CFA0075C141 /* AppDelegate.swift */; };
-		21C739EF1CD78CFA0075C141 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C739EE1CD78CFA0075C141 /* ViewController.swift */; };
 		21C739F21CD78CFA0075C141 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 21C739F01CD78CFA0075C141 /* Main.storyboard */; };
 		21C739F51CD78CFA0075C141 /* Virtual_Tourist.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 21C739F31CD78CFA0075C141 /* Virtual_Tourist.xcdatamodeld */; };
 		21C739F71CD78CFA0075C141 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21C739F61CD78CFA0075C141 /* Assets.xcassets */; };
@@ -16,12 +15,12 @@
 		21C73A021CD78D850075C141 /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C73A011CD78D850075C141 /* CoreDataStack.swift */; };
 		21C73A041CD78DD50075C141 /* Pin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C73A031CD78DD50075C141 /* Pin.swift */; };
 		21C73A061CD78DE60075C141 /* Picture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C73A051CD78DE60075C141 /* Picture.swift */; };
+		21C73A0A1CD78F410075C141 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C73A091CD78F410075C141 /* MapViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		21C739E91CD78CF90075C141 /* Virtual Tourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Virtual Tourist.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		21C739EC1CD78CFA0075C141 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		21C739EE1CD78CFA0075C141 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		21C739F11CD78CFA0075C141 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		21C739F41CD78CFA0075C141 /* Virtual_Tourist.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Virtual_Tourist.xcdatamodel; sourceTree = "<group>"; };
 		21C739F61CD78CFA0075C141 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -30,6 +29,7 @@
 		21C73A011CD78D850075C141 /* CoreDataStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		21C73A031CD78DD50075C141 /* Pin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Pin.swift; sourceTree = "<group>"; };
 		21C73A051CD78DE60075C141 /* Picture.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Picture.swift; sourceTree = "<group>"; };
+		21C73A091CD78F410075C141 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,11 +64,11 @@
 			children = (
 				21C73A071CD78DF10075C141 /* Model */,
 				21C739EC1CD78CFA0075C141 /* AppDelegate.swift */,
-				21C739EE1CD78CFA0075C141 /* ViewController.swift */,
 				21C739F01CD78CFA0075C141 /* Main.storyboard */,
 				21C739F61CD78CFA0075C141 /* Assets.xcassets */,
 				21C73A011CD78D850075C141 /* CoreDataStack.swift */,
 				21C73A081CD78E0B0075C141 /* Supporting files */,
+				21C73A091CD78F410075C141 /* MapViewController.swift */,
 			);
 			path = "Virtual Tourist";
 			sourceTree = "<group>";
@@ -164,8 +164,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				21C73A061CD78DE60075C141 /* Picture.swift in Sources */,
+				21C73A0A1CD78F410075C141 /* MapViewController.swift in Sources */,
 				21C73A041CD78DD50075C141 /* Pin.swift in Sources */,
-				21C739EF1CD78CFA0075C141 /* ViewController.swift in Sources */,
 				21C739F51CD78CFA0075C141 /* Virtual_Tourist.xcdatamodeld in Sources */,
 				21C739ED1CD78CFA0075C141 /* AppDelegate.swift in Sources */,
 				21C73A021CD78D850075C141 /* CoreDataStack.swift in Sources */,

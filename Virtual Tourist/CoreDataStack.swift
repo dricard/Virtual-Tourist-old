@@ -6,10 +6,27 @@
 //  Copyright © 2016 Hexaedre. All rights reserved.
 //
 
-import UIKit
+import Foundation
 import CoreData
 
-class CoreDataStack: NSObject {
+private let SQLITE_FILE_NAME = "VirtalTourist.sqlite"
+
+class CoreDataStackManager {
+
+
+    // MARK: - Shared Instance
+    
+    /**
+     *  This class variable provides an easy way to get access
+     *  to a shared instance of the CoreDataStackManager class.
+     */
+    class func sharedInstance() -> CoreDataStackManager {
+        struct Static {
+            static let instance = CoreDataStackManager()
+        }
+        
+        return Static.instance
+    }
 
     // MARK: - Core Data stack
     
@@ -29,7 +46,7 @@ class CoreDataStack: NSObject {
         // The persistent store coordinator for the application. This implementation creates and returns a coordinator, having added the store for the application to it. This property is optional since there are legitimate error conditions that could cause the creation of the store to fail.
         // Create the coordinator and store
         let coordinator = NSPersistentStoreCoordinator(managedObjectModel: self.managedObjectModel)
-        let url = self.applicationDocumentsDirectory.URLByAppendingPathComponent("SingleViewCoreData.sqlite")
+        let url = self.applicationDocumentsDirectory.URLByAppendingPathComponent(SQLITE_FILE_NAME)
         var failureReason = "There was an error creating or loading the application's saved data."
         do {
             try coordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: url, options: nil)
