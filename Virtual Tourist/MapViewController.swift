@@ -24,7 +24,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let longPressRec = UILongPressGestureRecognizer()
         longPressRec.addTarget(self, action: #selector(MapViewController.userLongPressed))
         longPressRec.allowableMovement = 25
-        longPressRec.minimumPressDuration = 1.0
+        longPressRec.minimumPressDuration = 2.0
         longPressRec.numberOfTouchesRequired = 1
         view!.addGestureRecognizer(longPressRec)
         
@@ -34,11 +34,39 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     // MARK: - MapView Delegates
     
+    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+        let reuseId = "pin"
+        
+        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId) as? MKPinAnnotationView
+        
+        if let pin = pinView {
+            pin.annotation = annotation
+        } else {
+            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pinView!.canShowCallout = true
+            pinView!.pinTintColor = UIColor.blackColor()
+            pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
+        }
+        
+        return pinView
+        
+    }
     
     // MARK: - User Actions
     
-    func userLongPressed() {
+    @IBAction func userLongPressed(sender: AnyObject) {
         print("User long pressed!!")
+        
+        // Get the location of the longpress in mapView
+        let location = sender.locationInView(mapView)
+        
+        // Get the map coordinate from the point pressed on the map
+        let locationCoordinate = mapView.convertPoint(location, toCoordinateFromView: mapView)
+        
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = locationCoordinate
+        
+        mapView.addAnnotation(annotation)
     }
     
     // MARK: - Navigation
