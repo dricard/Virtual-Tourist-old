@@ -37,5 +37,77 @@
             </objects>
             <point key="canvasLocation" x="675" y="479"/>
         </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="XJI-79-U2h">
+            <objects>
+                <navigationController id="w71-zq-tX6" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="81j-6c-Ojf">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="evY-IB-jrh" kind="relationship" relationship="rootViewController" id="UiE-x7-wuN"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8mx-vH-cL8" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1556" y="479"/>
+        </scene>
+        <!--Picture View Controller-->
+        <scene sceneID="u3U-ks-cEs">
+            <objects>
+                <viewController storyboardIdentifier="PictureViewController" id="evY-IB-jrh" customClass="PictureViewController" customModule="Virtual_Tourist" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="nBO-fw-18V"/>
+                        <viewControllerLayoutGuide type="bottom" id="pJd-zV-jNG"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="Ya2-uT-s4l">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="fZQ-tZ-1Oo">
+                                <rect key="frame" x="0.0" y="64" width="600" height="150"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="150" id="7j1-NM-koT"/>
+                                </constraints>
+                            </mapView>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="OKO-NS-Vjr">
+                                <rect key="frame" x="0.0" y="214" width="600" height="386"/>
+                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="C1k-QJ-8Xl">
+                                    <size key="itemSize" width="50" height="50"/>
+                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                </collectionViewFlowLayout>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="Jmp-5m-X1z">
+                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        </view>
+                                    </collectionViewCell>
+                                </cells>
+                            </collectionView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="fZQ-tZ-1Oo" firstAttribute="top" secondItem="nBO-fw-18V" secondAttribute="bottom" id="1Hk-JO-tXA"/>
+                            <constraint firstItem="OKO-NS-Vjr" firstAttribute="leading" secondItem="Ya2-uT-s4l" secondAttribute="leading" id="A9d-Wd-uXM"/>
+                            <constraint firstItem="OKO-NS-Vjr" firstAttribute="top" secondItem="nBO-fw-18V" secondAttribute="bottom" constant="150" id="Gbf-FQ-iU3"/>
+                            <constraint firstItem="fZQ-tZ-1Oo" firstAttribute="leading" secondItem="Ya2-uT-s4l" secondAttribute="leading" id="XlK-OY-04Z"/>
+                            <constraint firstItem="pJd-zV-jNG" firstAttribute="top" secondItem="OKO-NS-Vjr" secondAttribute="bottom" id="aQS-zn-2lp"/>
+                            <constraint firstAttribute="trailing" secondItem="fZQ-tZ-1Oo" secondAttribute="trailing" id="cgk-m5-6a0"/>
+                            <constraint firstAttribute="trailing" secondItem="OKO-NS-Vjr" secondAttribute="trailing" id="hda-bb-RuO"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="29T-WM-Czn"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="nEi-76-8O2" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2276" y="475"/>
+        </scene>
     </scenes>
 </document>

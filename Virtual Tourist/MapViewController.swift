@@ -30,6 +30,14 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         mapView.delegate = self
         
+        // restore mapView to saved state
+        restoreMapRegion(true)
+        
+    }
+    
+    override func viewWillDisappear(animated: Bool) {
+        // We're going to another view, let's save the current state.
+        saveMapRegion()
     }
     
     // MARK: - MapView Delegates
@@ -52,6 +60,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
     }
     
+    func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+    
+        saveMapRegion()
+        
+    }
+    
     // MARK: - User Actions
     
     @IBAction func userLongPressed(sender: AnyObject) {
@@ -71,10 +85,71 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     // MARK: - Navigation
 
+    
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
+    }
+
+    // MARK: - utilities
+    
+    /*  
+        I made the design choice to persist the mapView state (visible region of the map)
+        using the NSKeyedArchiver method. I'm using CoreData to persist the complex
+        pins and pictures objects, but I feel that the current map state is more
+        something that should be preserved with NSKeyedArchiver.
+    */
+    
+    // Here we use the same filePath strategy for persisting the mapView state
+    // A convenient property
+    var filePath : String {
+        let manager = NSFileManager.defaultManager()
+        let url = manager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first! as NSURL
+        return url.URLByAppendingPathComponent("mapRegionArchive").path!
+    }
+
+    func saveMapRegion() {
+        
+        // Place the "center" and "span" of the map into a dictionary
+        // The "span" is the width and height of the map in degrees.
+        // It represents the zoom level of the map.
+        
+        print("Saving map state")
+        
+        let dictionary = [
+            "latitude" : mapView.region.center.latitude,
+            "longitude" : mapView.region.center.longitude,
+            "latitudeDelta" : mapView.region.span.latitudeDelta,
+            "longitudeDelta" : mapView.region.span.longitudeDelta
+        ]
+ 
+        print("lat: \(dictionary["latitude"]), lon: \(dictionary["longitude"]), latD: \(dictionary["latitudeDelta"]), lonD: \(dictionary["longitudeDelta"])")
+
+        // Archive the dictionary into the filePath
+        NSKeyedArchiver.archiveRootObject(dictionary, toFile: filePath)
+    }
+    
+    func restoreMapRegion(animated: Bool) {
+        
+        // if we can unarchive a dictionary, we will use it to set the map back to its
+        // previous center and span
+        if let regionDictionary = NSKeyedUnarchiver.unarchiveObjectWithFile(filePath) as? [String : AnyObject] {
+            
+            let longitude = regionDictionary["longitude"] as! CLLocationDegrees
+            let latitude = regionDictionary["latitude"] as! CLLocationDegrees
+            let center = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+            
+            let longitudeDelta = regionDictionary["latitudeDelta"] as! CLLocationDegrees
+            let latitudeDelta = regionDictionary["longitudeDelta"] as! CLLocationDegrees
+            let span = MKCoordinateSpan(latitudeDelta: latitudeDelta, longitudeDelta: longitudeDelta)
+            
+            let savedRegion = MKCoordinateRegion(center: center, span: span)
+            
+            print("lat: \(latitude), lon: \(longitude), latD: \(latitudeDelta), lonD: \(longitudeDelta)")
+            
+            mapView.setRegion(savedRegion, animated: animated)
+        }
     }
 
 }
