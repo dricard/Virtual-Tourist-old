@@ -50,6 +50,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         if let pin = pinView {
             pin.annotation = annotation
         } else {
+            print("adding a new annotation")
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = true
             pinView!.pinTintColor = UIColor.blackColor()
@@ -66,6 +67,13 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
     }
     
+    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        print("in calloutAccessoryControlTapped")
+        
+        
+    }
+    
+    
     // MARK: - User Actions
     
     @IBAction func userLongPressed(sender: AnyObject) {
@@ -79,6 +87,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
         let annotation = MKPointAnnotation()
         annotation.coordinate = locationCoordinate
+        annotation.title = "Tap to see pictures of this location"
         
         mapView.addAnnotation(annotation)
     }
