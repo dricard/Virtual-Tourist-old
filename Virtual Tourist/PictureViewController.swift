@@ -10,11 +10,35 @@ import UIKit
 import MapKit
 
 class PictureViewController: UIViewController, MKMapViewDelegate {
+    
+    // MARK: - Properties
+    
+    var focusRegion: MKCoordinateRegion?
+    
+    // MARK: - Outlets
+    
+    @IBOutlet weak var mapView: MKMapView!
+    
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Set up the map portion of the screen with the pin location
+        mapView.setRegion(focusRegion!, animated: false)
+        // Drop a pin in this mapView at the same place as in the MapViewController
 
-        // Do any additional setup after loading the view.
+        let lat = focusRegion?.center.latitude
+        let long = focusRegion?.center.longitude
+        
+        let locationCoordinate = CLLocationCoordinate2D(latitude: lat!, longitude: long!)
+        
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = locationCoordinate
+        annotation.title = "Tap to see pictures of this location"
+        
+        mapView.addAnnotation(annotation)
+
+
     }
 
     override func didReceiveMemoryWarning() {

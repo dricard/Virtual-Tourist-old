@@ -69,7 +69,28 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         print("in calloutAccessoryControlTapped")
+
+        let controller = storyboard!.instantiateViewControllerWithIdentifier("PictureViewController") as! PictureViewController
         
+        // Get the region to transfert
+        let longitude = view.annotation!.coordinate.longitude
+        let latitude = view.annotation!.coordinate.latitude
+        let center = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+        
+        let longitudeDelta = mapView.region.span.longitudeDelta
+        let latitudeDelta = mapView.region.span.latitudeDelta / 3
+        let span = MKCoordinateSpan(latitudeDelta: latitudeDelta, longitudeDelta: longitudeDelta)
+        
+        let focusRegion = MKCoordinateRegion(center: center, span: span)
+
+        
+        // Communicate the region of the map to show
+        controller.focusRegion = focusRegion
+        // if not part of a navigation stack, use this
+        presentViewController(controller, animated: true, completion: nil)
+        // if part of a navigation stack, use this instead
+//        showViewController(controller, sender: self)
+
         
     }
     
