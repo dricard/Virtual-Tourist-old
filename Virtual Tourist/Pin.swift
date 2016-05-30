@@ -6,8 +6,20 @@
 //  Copyright © 2016 Hexaedre. All rights reserved.
 //
 
-import UIKit
+import CoreData
 
-class Pin: NSObject {
+class Pin: NSManagedObject {
 
+    // MARK: - Properties
+    
+    struct Keys {
+        static let Lattitude = "lat"
+        static let Longitude = "lon"
+    }
+    
+    @NSManaged var lat: NSNumber
+    @NSManaged var lon: NSNumber
+    @NSManaged var photos: [Photo]
+    
+    
 }
