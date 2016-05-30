@@ -10,6 +10,10 @@ import UIKit
 import MapKit
 
 class MapViewController: UIViewController, MKMapViewDelegate {
+    
+    // MARK: - Properties
+    
+    let longPressRec = UILongPressGestureRecognizer()
 
     // MARK: - Outlets
     
@@ -21,10 +25,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let longPressRec = UILongPressGestureRecognizer()
+        // configure the gesture recognizer for long presses
         longPressRec.addTarget(self, action: #selector(MapViewController.userLongPressed))
         longPressRec.allowableMovement = 25
-        longPressRec.minimumPressDuration = 2.0
+        longPressRec.minimumPressDuration = 1.0
         longPressRec.numberOfTouchesRequired = 1
         view!.addGestureRecognizer(longPressRec)
         
@@ -50,7 +54,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         if let pin = pinView {
             pin.annotation = annotation
         } else {
-            print("adding a new annotation")
+
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = true
             pinView!.pinTintColor = UIColor.blackColor()
@@ -98,19 +102,21 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     // MARK: - User Actions
     
     @IBAction func userLongPressed(sender: AnyObject) {
-        print("User long pressed!!")
         
-        // Get the location of the longpress in mapView
-        let location = sender.locationInView(mapView)
-        
-        // Get the map coordinate from the point pressed on the map
-        let locationCoordinate = mapView.convertPoint(location, toCoordinateFromView: mapView)
-        
-        let annotation = MKPointAnnotation()
-        annotation.coordinate = locationCoordinate
-        annotation.title = "Tap to see pictures of this location"
-        
-        mapView.addAnnotation(annotation)
+
+        if longPressRec.state == UIGestureRecognizerState.Began {
+            // Get the location of the longpress in mapView
+            let location = sender.locationInView(mapView)
+            
+            // Get the map coordinate from the point pressed on the map
+            let locationCoordinate = mapView.convertPoint(location, toCoordinateFromView: mapView)
+            
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = locationCoordinate
+            annotation.title = "Tap to see pictures of this location"
+            
+            mapView.addAnnotation(annotation)
+        }
     }
     
     // MARK: - Navigation
