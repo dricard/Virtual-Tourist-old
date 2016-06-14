@@ -110,7 +110,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             
             // Get the map coordinate from the point pressed on the map
             let locationCoordinate = mapView.convertPoint(location, toCoordinateFromView: mapView)
-            
+            print("Lat: \(locationCoordinate.latitude), lon: \(locationCoordinate.longitude)")
             let annotation = MKPointAnnotation()
             annotation.coordinate = locationCoordinate
             annotation.title = "Tap to see pictures of this location"
