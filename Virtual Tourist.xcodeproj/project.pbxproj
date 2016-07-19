@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		21020CA71CD8D44A0001356D /* PictureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21020CA61CD8D44A0001356D /* PictureViewController.swift */; };
+		212F59BE1D181D0E00475C4E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212F59BD1D181D0E00475C4E /* Constants.swift */; };
 		2159937A1D089F0E007481FC /* FlickrAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215993791D089F0E007481FC /* FlickrAPI.swift */; };
 		21A6EFE01CFC8FB700C7951C /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A6EFDF1CFC8FB700C7951C /* Photo.swift */; };
 		21A6EFE21CFC9C1900C7951C /* Key.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21A6EFE11CFC9C1900C7951C /* Key.swift */; };
@@ -23,6 +24,7 @@
 
 /* Begin PBXFileReference section */
 		21020CA61CD8D44A0001356D /* PictureViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PictureViewController.swift; sourceTree = "<group>"; };
+		212F59BD1D181D0E00475C4E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		215993791D089F0E007481FC /* FlickrAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrAPI.swift; sourceTree = "<group>"; };
 		21A6EFDF1CFC8FB700C7951C /* Photo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		21A6EFE11CFC9C1900C7951C /* Key.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Key.swift; sourceTree = "<group>"; };
@@ -63,6 +65,7 @@
 			children = (
 				21A6EFE11CFC9C1900C7951C /* Key.swift */,
 				215993791D089F0E007481FC /* FlickrAPI.swift */,
+				212F59BD1D181D0E00475C4E /* Constants.swift */,
 			);
 			name = Networking;
 			sourceTree = "<group>";
@@ -92,7 +95,6 @@
 				21C739EC1CD78CFA0075C141 /* AppDelegate.swift */,
 				21C739F01CD78CFA0075C141 /* Main.storyboard */,
 				21C739F61CD78CFA0075C141 /* Assets.xcassets */,
-				21C73A011CD78D850075C141 /* CoreDataStack.swift */,
 				21C73A081CD78E0B0075C141 /* Supporting files */,
 			);
 			path = "Virtual Tourist";
@@ -101,6 +103,7 @@
 		21C73A071CD78DF10075C141 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				21C73A011CD78D850075C141 /* CoreDataStack.swift */,
 				21C73A031CD78DD50075C141 /* Pin.swift */,
 				21A6EFDF1CFC8FB700C7951C /* Photo.swift */,
 				21C739F31CD78CFA0075C141 /* Virtual_Tourist.xcdatamodeld */,
@@ -193,6 +196,7 @@
 				21A6EFE21CFC9C1900C7951C /* Key.swift in Sources */,
 				21C73A041CD78DD50075C141 /* Pin.swift in Sources */,
 				21C739F51CD78CFA0075C141 /* Virtual_Tourist.xcdatamodeld in Sources */,
+				212F59BE1D181D0E00475C4E /* Constants.swift in Sources */,
 				21020CA71CD8D44A0001356D /* PictureViewController.swift in Sources */,
 				21C739ED1CD78CFA0075C141 /* AppDelegate.swift in Sources */,
 				21C73A021CD78D850075C141 /* CoreDataStack.swift in Sources */,

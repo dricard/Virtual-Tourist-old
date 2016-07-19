@@ -15,10 +15,77 @@ class Photo: NSManagedObject {
         static let ID = "id"
         static let Photo = "photo"
         static let Title = "title"
+        static let ImagePath = "imagePath"
     }
     
     @NSManaged var title: String
     @NSManaged var id: NSNumber
     @NSManaged var imagePath: String?
     @NSManaged var pin: Pin?
+    
+    override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
+        super.init(entity: entity, insertIntoManagedObjectContext: context)
+    }
+    
+    init(dictionary: [String:AnyObject], context: NSManagedObjectContext) {
+        
+        // Core Data
+        if let entity = NSEntityDescription.entityForName("Photo", inManagedObjectContext: context) {
+            super.init(entity: entity, insertIntoManagedObjectContext: context)
+            
+            // Dictionary
+            title = dictionary[Keys.Title] as! String
+            id = dictionary[Keys.ID] as! Int
+            imagePath = dictionary[Keys.ImagePath] as? String
+            if let validatedURL = validateURL(imagePath!) {
+                // looks good.
+                // change url to the reconditionned one
+                // in case some parts were fixed
+                imagePath = validatedURL
+            } else {
+                imagePath = nil
+            }
+        } else {
+            fatalError("Unable to find Entity named 'Photo'")
+        }
+    }
+    
+    // This is a modified version of something found on stackoverflow
+    
+    /// Returns a validated (format only) URL or nil if not able to
+    /// make one with the supplied url.
+    /// - parameters:
+    ///    - url: the String associated with the mediaURL on Flickr.
+    /// - returns:
+    ///    - a valid url in a String, or
+    ///    - `nil` if unsuccessful.
+    private func validateURL(url: String) -> String? {
+        
+        let types: NSTextCheckingType = .Link
+        
+        var detector: AnyObject!
+        do {
+            detector = try NSDataDetector(types: types.rawValue)
+        } catch {
+            print("Error validating URL: \(url)")
+            return nil
+        }
+        
+        guard let detect = detector else {
+            return nil
+        }
+        
+        let matches = detect.matchesInString(url, options: .ReportCompletion, range: NSMakeRange(0, url.characters.count))
+        
+        if !matches.isEmpty {
+            if let validURL = matches[0].URL {
+                return String(validURL)
+            } else {
+                return nil
+            }
+        } else {
+            return nil
+        }
+    }
+
 }

@@ -10,6 +10,7 @@ import Foundation
 import CoreData
 
 private let SQLITE_FILE_NAME = "VirtalTourist.sqlite"
+private let modelName = "Virtual_Tourist"
 
 class CoreDataStackManager {
 
@@ -38,7 +39,7 @@ class CoreDataStackManager {
     
     lazy var managedObjectModel: NSManagedObjectModel = {
         // The managed object model for the application. This property is not optional. It is a fatal error for the application not to be able to find and load its model.
-        let modelURL = NSBundle.mainBundle().URLForResource("Virtual_Tourist", withExtension: "momd")!
+        let modelURL = NSBundle.mainBundle().URLForResource(modelName, withExtension: "momd")!
         return NSManagedObjectModel(contentsOfURL: modelURL)!
     }()
     
