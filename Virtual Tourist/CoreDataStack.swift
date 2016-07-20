@@ -22,10 +22,10 @@ class CoreDataStackManager {
      */
     class func sharedInstance() -> CoreDataStackManager {
         struct Static {
-            static let instance = CoreDataStackManager()
+            static let stack = CoreDataStackManager(modelName: modelName)!
         }
         
-        return Static.instance
+        return Static.stack
     }
 
     // MARK: - Properties
