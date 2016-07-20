@@ -41,15 +41,13 @@ class PictureViewController: UIViewController, MKMapViewDelegate {
         mapView.addAnnotation(annotation)
 
         // DEBUG
-        networkAPI.sendRequest(lat!, lon: long!) { (success, error) in
-            print("request completed")
+        if let pin = pin {
+            networkAPI.sendRequest(pin) { (photos, success, error) in
+                print("request completed")
         }
+            
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
 
     /*
