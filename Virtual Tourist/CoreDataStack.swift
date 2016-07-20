@@ -6,7 +6,6 @@
 //  Copyright © 2016 Hexaedre. All rights reserved.
 //
 
-import Foundation
 import CoreData
 
 private let SQLITE_FILE_NAME = "VirtalTourist.sqlite"
@@ -29,6 +28,16 @@ class CoreDataStackManager {
         return Static.instance
     }
 
+    // MARK: - Properties
+    
+    private let model: NSManagedObjectModel
+    private let coordinator: NSPersistentStoreCoordinator
+    private let modelURL: NSURL
+    private let dbURL: NSURL
+    private let persistingContext: NSManagedObjectContext
+    private let backgroundContext: NSManagedObjectContext
+    let context: NSManagedObjectContext
+    
     // MARK: - Core Data stack
     
     lazy var applicationDocumentsDirectory: NSURL = {

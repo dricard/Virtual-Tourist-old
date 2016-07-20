@@ -41,11 +41,13 @@ class PictureViewController: UIViewController, MKMapViewDelegate {
         mapView.addAnnotation(annotation)
 
         // DEBUG
+        print("Sending request to Flickr API")
         if let pin = pin {
             networkAPI.sendRequest(pin) { (photos, success, error) in
                 print("request completed")
+            }
         }
-            
+        
     }
 
     
