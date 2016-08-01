@@ -13,9 +13,43 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
+    let stack = CoreDataStack(modelName: "Virtual_Tourist")!
 
+    func preloadData() {
+        
+        // first remove any data
+        do {
+            try stack.dropAllData()
+        } catch {
+            fatalError("Error dropping all objects in DB")
+        }
+        
+        // create a pin and photos
+        // first create a dictionary with the data
+        var locationInfo = [String:AnyObject]()
+        locationInfo["lat"] = 45.5549318422931
+        locationInfo["lon"] = -73.7842104341366
+        // then create a pin with that info
+        let pin = Pin(dictionary: locationInfo, context: stack.context)
+        
+        // now let create some photos to add to that pin
+        var photoInfo = [String:AnyObject]()
+        photoInfo["title"] = "Bien avant Costco de nos jours..."
+        photoInfo["id"] = "26749838213"
+        photoInfo["imagePath"] = "https://farm8.staticflickr.com/7434/26749838213_f3583ba4fa.jpg"
+        let photo = Photo(dictionary: photoInfo, context: stack.context)
+        photo.pin = pin
+        
+    }
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Override point for customization after application launch.
+
+        // load some data
+        preloadData()
+        
+        // start autosaving
+        stack.autoSave(60)
+        
         return true
     }
 
@@ -40,7 +74,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         // Saves changes in the application's managed object context before the application terminates.
-        CoreDataStackManager.sharedInstance().saveContext()
+        stack.save()
     }
 
 

@@ -11,22 +11,8 @@ import CoreData
 private let SQLITE_FILE_NAME = "VirtalTourist.sqlite"
 private let modelName = "Virtual_Tourist"
 
-class CoreDataStackManager {
+class CoreDataStack {
 
-
-    // MARK: - Shared Instance
-    
-    /**
-     *  This class variable provides an easy way to get access
-     *  to a shared instance of the CoreDataStackManager class.
-     */
-    class func sharedInstance() -> CoreDataStackManager {
-        struct Static {
-            static let stack = CoreDataStackManager(modelName: modelName)!
-        }
-        
-        return Static.stack
-    }
 
     // MARK: - Properties
     
@@ -94,7 +80,7 @@ class CoreDataStackManager {
 }
 
 // MARK: - Batch processing in the background
-extension CoreDataStackManager {
+extension CoreDataStack {
     
     typealias Batch = (workerContext: NSManagedObjectContext) -> ()
     
@@ -113,8 +99,24 @@ extension CoreDataStackManager {
     }
 }
 
+// MARK: - Core Data debuggin support
+
+// These methods are designed to help set-up static data to
+// debug Core Data
+extension CoreDataStack {
+    
+    func dropAllData() throws {
+        // delete all objects in the database (without deleting the database itself)
+        try coordinator.destroyPersistentStoreAtURL(dbURL, withType: NSSQLiteStoreType, options: nil)
+        
+        try coordinator.addPersistentStoreWithType(NSSQLiteStoreType, configuration: nil, URL: dbURL, options: nil)
+    }
+    
+}
+
+
 // MARK: - Core Data Saving support
-extension CoreDataStackManager {
+extension CoreDataStack {
     func save() {
         // We call this synchronously, but it's a very fast
         // operation (it doesn't hit the disk). We need to know

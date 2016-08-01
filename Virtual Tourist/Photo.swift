@@ -13,13 +13,13 @@ class Photo: NSManagedObject {
     
     struct Keys {
         static let ID = "id"
-        static let Photo = "photo"
+        static let Pin = "pin"
         static let Title = "title"
         static let ImagePath = "imagePath"
     }
     
     @NSManaged var title: String
-    @NSManaged var id: NSNumber
+    @NSManaged var id: String
     @NSManaged var imagePath: String?
     @NSManaged var pin: Pin?
     
@@ -35,7 +35,7 @@ class Photo: NSManagedObject {
             
             // Dictionary
             title = dictionary[Keys.Title] as! String
-            id = dictionary[Keys.ID] as! Int
+            id = dictionary[Keys.ID] as! String
             imagePath = dictionary[Keys.ImagePath] as? String
             if let validatedURL = validateURL(imagePath!) {
                 // looks good.

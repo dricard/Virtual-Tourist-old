@@ -74,8 +74,10 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         print("in calloutAccessoryControlTapped")
 
+//        let controller = storyboard!.instantiateViewControllerWithIdentifier("PictureViewController") as! PictureViewController
+
         let controller = storyboard!.instantiateViewControllerWithIdentifier("PictureViewController") as! PictureViewController
-        
+
         // Get the region to transfert
         let longitude = view.annotation!.coordinate.longitude
         let latitude = view.annotation!.coordinate.latitude
