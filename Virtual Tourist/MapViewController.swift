@@ -72,7 +72,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        print("in calloutAccessoryControlTapped")
+//        print("in calloutAccessoryControlTapped")
 
 //        let controller = storyboard!.instantiateViewControllerWithIdentifier("PictureViewController") as! PictureViewController
 
@@ -112,7 +112,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             
             // Get the map coordinate from the point pressed on the map
             let locationCoordinate = mapView.convertPoint(location, toCoordinateFromView: mapView)
-            print("Lat: \(locationCoordinate.latitude), lon: \(locationCoordinate.longitude)")
+//            print("Lat: \(locationCoordinate.latitude), lon: \(locationCoordinate.longitude)")
             let annotation = MKPointAnnotation()
             annotation.coordinate = locationCoordinate
             annotation.title = "Tap to see pictures of this location"
@@ -153,7 +153,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         // The "span" is the width and height of the map in degrees.
         // It represents the zoom level of the map.
         
-        print("Saving map state")
+//        print("Saving map state")
         
         let dictionary = [
             "latitude" : mapView.region.center.latitude,
@@ -162,7 +162,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             "longitudeDelta" : mapView.region.span.longitudeDelta
         ]
  
-        print("lat: \(dictionary["latitude"]), lon: \(dictionary["longitude"]), latD: \(dictionary["latitudeDelta"]), lonD: \(dictionary["longitudeDelta"])")
+//        print("lat: \(dictionary["latitude"]), lon: \(dictionary["longitude"]), latD: \(dictionary["latitudeDelta"]), lonD: \(dictionary["longitudeDelta"])")
 
         // Archive the dictionary into the filePath
         NSKeyedArchiver.archiveRootObject(dictionary, toFile: filePath)
@@ -184,7 +184,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             
             let savedRegion = MKCoordinateRegion(center: center, span: span)
             
-            print("lat: \(latitude), lon: \(longitude), latD: \(latitudeDelta), lonD: \(longitudeDelta)")
+//            print("lat: \(latitude), lon: \(longitude), latD: \(latitudeDelta), lonD: \(longitudeDelta)")
             
             mapView.setRegion(savedRegion, animated: animated)
         }
