@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MapKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -26,11 +27,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         // create a pin and photos
         // first create a dictionary with the data
-        var locationInfo = [String:AnyObject]()
-        locationInfo["lat"] = 45.5549318422931
-        locationInfo["lon"] = -73.7842104341366
+        let locationInfo = CLLocationCoordinate2DMake(45.5549318422931, -73.7842104341366)
         // then create a pin with that info
-        let pin = Pin(dictionary: locationInfo, context: stack.context)
+        let pin = Pin(coordinate: locationInfo, context: stack.context)
         
         // now let create some photos to add to that pin
         var photoInfo = [String:AnyObject]()
