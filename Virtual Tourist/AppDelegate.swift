@@ -39,6 +39,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let photo = Photo(dictionary: photoInfo, context: stack.context)
         photo.pin = pin
         
+        print(pin)
+        print(photo)
     }
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
