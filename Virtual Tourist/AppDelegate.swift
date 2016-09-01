@@ -14,7 +14,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    let stack = CoreDataStack(modelName: "Virtual_Tourist")!
+    let stack = CoreDataStack.sharedInstance()
 
     func preloadData() {
         
@@ -28,8 +28,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // create a pin and photos
         // first create a dictionary with the data
         let locationInfo = CLLocationCoordinate2DMake(45.5549318422931, -73.7842104341366)
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = locationInfo
         // then create a pin with that info
-        let pin = Pin(coordinate: locationInfo, context: stack.context)
+        let pin = Pin(annotation: annotation, context: stack.context)
         
         // now let create some photos to add to that pin
         var photoInfo = [String:AnyObject]()
@@ -46,7 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 
         // load some data
-        preloadData()
+//        preloadData()
         
         // start autosaving
         stack.autoSave(60)

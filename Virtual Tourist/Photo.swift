@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class Photo: NSManagedObject {
+class Photo: ManagedObject {
     
     struct Keys {
         static let ID = "id"
@@ -30,7 +30,7 @@ class Photo: NSManagedObject {
     init(dictionary: [String:AnyObject], context: NSManagedObjectContext) {
         
         // Core Data
-        if let entity = NSEntityDescription.entityForName("Photo", inManagedObjectContext: context) {
+        if let entity = NSEntityDescription.entityForName(Photo.entityName, inManagedObjectContext: context) {
             super.init(entity: entity, insertIntoManagedObjectContext: context)
             
             // Dictionary
@@ -88,4 +88,19 @@ class Photo: NSManagedObject {
         }
     }
 
+}
+
+extension Photo: ManagedObjectType {
+    public static var entityName: String {
+        return "Photo"
+    }
+    
+    public static var defaultSortDescriptors: [NSSortDescriptor] {
+        return [NSSortDescriptor(key: "title", ascending: true)]
+    }
+    
+//    public static defaultPredicate: NSPredicate {
+//        return
+//    }
+    
 }

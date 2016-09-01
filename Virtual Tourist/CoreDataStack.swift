@@ -13,7 +13,15 @@ private let modelName = "Virtual_Tourist"
 
 class CoreDataStack {
 
-
+    // MARK: Shared Instance
+    
+    class func sharedInstance() -> CoreDataStack {
+        struct Singleton {
+            static var sharedInstance = CoreDataStack(modelName: "Virtual_Tourist")!
+        }
+        return Singleton.sharedInstance
+    }
+    
     // MARK: - Properties
     
     private let model: NSManagedObjectModel

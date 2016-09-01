@@ -17,9 +17,32 @@ class PictureViewController: UIViewController {
     var focusRegion: MKCoordinateRegion?
     let networkAPI = FlickrAPI()
     var pin: Pin?
+    var photos = [Photo]()
     
     var screenWidth: CGFloat = 0
     var screenHeight: CGFloat = 0
+ 
+    let stack = CoreDataStack.sharedInstance()
+
+    // MARK: - Fetched Results Controller
+    
+    lazy var fetchedResultsController: NSFetchedResultsController = {
+        
+        // Create the fetch request
+        let fetchRequest = NSFetchRequest(entityName: "Photo")
+        
+        // Add a sort descriptor.
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+        
+        // Add a predicate (if relation is to-many: one actor has many movie objects)
+        fetchRequest.predicate = NSPredicate(format: "pin == %@", self.pin!)
+        
+        // Create the Fetched Results Controller
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.stack.context, sectionNameKeyPath: nil, cacheName: nil)
+        
+        // Return the fetched results controller. It will be the value of the lazy variable
+        return fetchedResultsController
+    } ()
     
     // MARK: - Outlets
     
@@ -52,17 +75,58 @@ class PictureViewController: UIViewController {
         
         mapView.addAnnotation(annotation)
 
-        // DEBUG
-//        print("Sending request to Flickr API")
-//        if let pin = pin {
-//            networkAPI.sendRequest(pin) { (photos, success, error) in
-//                print("request completed")
-//            }
-//        }
+        photos = fetchAllPhotos()
+        if photos.isEmpty {
+            print("We DON'T have photos at this location, searching API")
+            // DEBUG
+            //        print("Sending request to Flickr API")
+            //        if let pin = pin {
+            //            networkAPI.sendRequest(pin) { (photos, success, error) in
+            //                print("request completed")
+            //            }
+            //        }
+            
+        } else {
+            print("We have photos at this location, displaying")
+        }
         
     }
     
     // MARK: - Utilities
+    
+    func fetchAllPhotos() -> [Photo] {
+        
+        var error: NSError? = nil
+        var results: [Photo]?
+        
+        let fetchRequest = NSFetchRequest()
+        let entity = NSEntityDescription.entityForName("Photo", inManagedObjectContext: stack.context)
+        fetchRequest.entity = entity
+        
+        let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptor]
+        
+        fetchRequest.predicate = NSPredicate(format: "pin = %@", pin!)
+        
+        do {
+            results = try stack.context.executeRequest(fetchRequest) as? [Photo]
+        } catch let error1 as NSError {
+            error = error1
+            results = nil
+        } catch {
+            print("Error")
+        }
+        
+        if let error = error {
+            print("ERROR fetching photos: \(error)")
+        }
+        
+        if results == nil {
+            return [Photo]()    // send back an empty array
+        } else {
+            return results!
+        }
+    }
     
     func getScreenSize() {
         screenWidth = view.frame.size.width
@@ -116,5 +180,9 @@ extension PictureViewController: UICollectionViewDataSource {
 
 extension PictureViewController: UICollectionViewDelegate {
     
+    
+}
+
+extension PictureViewController: NSFetchedResultsControllerDelegate {
     
 }
