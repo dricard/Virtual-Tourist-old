@@ -8,18 +8,20 @@
 
 import UIKit
 import MapKit
+import CoreData
 
-class FlickrAPI {
+class FlickrAPI: NSObject {
 
     
     // MARK: - Properties
     
-    let flickrAPIKey = API_KEY
-    let flickrSecret = API_SECRET
+    static let flickrAPIKey = API_KEY
+    static let flickrSecret = API_SECRET
     
-    let session = NSURLSession.sharedSession()
+    static let session = NSURLSession.sharedSession()
+    let stack = CoreDataStack.sharedInstance()
 
-    func sendRequest(pin: Pin, completionHandlerForRequest: (photos: [Photo]?, success: Bool, error: NSError?) -> Void) {
+    static func sendRequest(pin: Pin, completionHandlerForRequest: (photos: [Photo]?, success: Bool, error: NSError?) -> Void) {
 
         // 1. create the parameters dictionary used by URLByAppendingQueryParameters
         let URLParams = [
@@ -59,8 +61,8 @@ class FlickrAPI {
 
             // GUARD: was there an error?
             guard (error == nil) else {
-            sendError("There was an error with the request to Flickr API: \(error)", code: Constants.Flickr.networkError)
-            return
+                sendError("There was an error with the request to Flickr API: \(error)", code: Constants.Flickr.networkError)
+                return
             }
 
             // GUARD: did we get a successful 2XX response?
@@ -72,16 +74,16 @@ class FlickrAPI {
 
             // GUARD: was there data returned?
             guard let data = data else {
-            sendError("No data was returned by the request!", code: Constants.Flickr.noDataError)
-            return
+                sendError("No data was returned by the request!", code: Constants.Flickr.noDataError)
+                return
             }
     
             // 5. Parse the data
             var parsedResult: AnyObject!
             do {
-            parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+                parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
             } catch {
-            sendError("Could not parse the data returned by Flickr: \(data)", code: Constants.Flickr.parseError)
+                sendError("Could not parse the data returned by Flickr: \(data)", code: Constants.Flickr.parseError)
             }
     
             // 6. Use the data
@@ -91,14 +93,18 @@ class FlickrAPI {
                 sendError("Could not parse photos from the data", code: Constants.Flickr.noPhotoDataError)
                 return
             }
+            print("We got to HERE 001")
     
             var photos = [Photo]()
             
-            for dictionay in photoArray {
-                
+            for dictionary in photoArray {
+                let photo = Photo(dictionary: dictionary, context: CoreDataStack.sharedInstance().context)
+                photos.append(photo)
             }
-            
-//            completionHandlerForRequest(data: data, success: true, error: nil)
+
+            print("We got to HERE 002")
+
+            completionHandlerForRequest(photos: photos, success: true, error: nil)
 
         })
         task.resume()

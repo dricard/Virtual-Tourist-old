@@ -15,7 +15,7 @@ class Photo: ManagedObject {
         static let ID = "id"
         static let Pin = "pin"
         static let Title = "title"
-        static let ImagePath = "imagePath"
+        static let ImagePath = "url_m"
     }
     
     @NSManaged var title: String
@@ -37,6 +37,9 @@ class Photo: ManagedObject {
             title = dictionary[Keys.Title] as! String
             id = dictionary[Keys.ID] as! String
             imagePath = dictionary[Keys.ImagePath] as? String
+            guard imagePath != nil else {
+                return
+            }
             if let validatedURL = validateURL(imagePath!) {
                 // looks good.
                 // change url to the reconditionned one

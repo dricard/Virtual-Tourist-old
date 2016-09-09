@@ -21,9 +21,11 @@ class PictureViewController: UIViewController {
     
     var screenWidth: CGFloat = 0
     var screenHeight: CGFloat = 0
- 
     let stack = CoreDataStack.sharedInstance()
-
+ 
+    // MARK: - Outlets
+        
+    
     // MARK: - Fetched Results Controller
     
     lazy var fetchedResultsController: NSFetchedResultsController = {
@@ -38,7 +40,7 @@ class PictureViewController: UIViewController {
         fetchRequest.predicate = NSPredicate(format: "pin == %@", self.pin!)
         
         // Create the Fetched Results Controller
-        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: self.stack.context, sectionNameKeyPath: nil, cacheName: nil)
+        let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: CoreDataStack.sharedInstance().context, sectionNameKeyPath: nil, cacheName: nil)
         
         // Return the fetched results controller. It will be the value of the lazy variable
         return fetchedResultsController
@@ -78,13 +80,26 @@ class PictureViewController: UIViewController {
         photos = fetchAllPhotos()
         if photos.isEmpty {
             print("We DON'T have photos at this location, searching API")
-            // DEBUG
-            //        print("Sending request to Flickr API")
-            //        if let pin = pin {
-            //            networkAPI.sendRequest(pin) { (photos, success, error) in
-            //                print("request completed")
-            //            }
-            //        }
+            /* DEBUG */
+                    print("Sending request to Flickr API")
+                    if let pin = pin {
+                        FlickrAPI.sendRequest(pin) { (photos, success, error) in
+                            print("request completed")
+                            
+                            // make sure the request was succellful
+                            guard success else {
+                                print("Request to Flickr API failed with error: \(error)")
+                                return
+                            }
+                            
+                            guard let photos = photos else {
+                                print("No photos in returned data from Flickr")
+                                return
+                            }
+                            
+                            self.photos = photos
+                        }
+                    }
             
         } else {
             print("We have photos at this location, displaying")
@@ -164,14 +179,33 @@ extension PictureViewController: UICollectionViewDataSource {
 
     // MARK: - CollectionViewController subclass required methods
     
+    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+        return (self.fetchedResultsController.sections?.count)!
+    }
+    
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
+
+        return fetchedResultsController.sections![section].numberOfObjects
     }
     
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("PhotoCell", forIndexPath: indexPath)
+        
+        // Create a cell
+        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("PhotoCell", forIndexPath: indexPath) as! PhotoCell
+        
+        // get the photo information from Core Data
+        let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
         
         // Configure the cell
+
+        if let imagePath = photo.imagePath {
+            let imageURL = NSURL(string: imagePath)
+            if let imageData = NSData(contentsOfURL: imageURL!) {
+                cell.imageView.image = UIImage(data: imageData)
+            }
+        } else {
+            cell.imageView.image = UIImage(named: "cube")
+        }
         
         return cell
     }

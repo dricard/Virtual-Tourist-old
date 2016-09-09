@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		21020CA71CD8D44A0001356D /* PictureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21020CA61CD8D44A0001356D /* PictureViewController.swift */; };
+		2126773F1D81D7CB00CE61AD /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2126773E1D81D7CB00CE61AD /* PhotoCell.swift */; };
 		212F59BE1D181D0E00475C4E /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 212F59BD1D181D0E00475C4E /* Constants.swift */; };
 		2159937A1D089F0E007481FC /* FlickrAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215993791D089F0E007481FC /* FlickrAPI.swift */; };
 		219C59171D62688800206ED0 /* ManagedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 219C59161D62688800206ED0 /* ManagedObject.swift */; };
@@ -25,6 +26,7 @@
 
 /* Begin PBXFileReference section */
 		21020CA61CD8D44A0001356D /* PictureViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PictureViewController.swift; sourceTree = "<group>"; };
+		2126773E1D81D7CB00CE61AD /* PhotoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
 		212F59BD1D181D0E00475C4E /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		215993791D089F0E007481FC /* FlickrAPI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlickrAPI.swift; sourceTree = "<group>"; };
 		219C59161D62688800206ED0 /* ManagedObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ManagedObject.swift; sourceTree = "<group>"; };
@@ -67,6 +69,7 @@
 			children = (
 				21C73A091CD78F410075C141 /* MapViewController.swift */,
 				21020CA61CD8D44A0001356D /* PictureViewController.swift */,
+				2126773E1D81D7CB00CE61AD /* PhotoCell.swift */,
 			);
 			name = VC;
 			sourceTree = "<group>";
@@ -206,6 +209,7 @@
 				21C73A0A1CD78F410075C141 /* MapViewController.swift in Sources */,
 				219C59171D62688800206ED0 /* ManagedObject.swift in Sources */,
 				21A6EFE21CFC9C1900C7951C /* Key.swift in Sources */,
+				2126773F1D81D7CB00CE61AD /* PhotoCell.swift in Sources */,
 				21C73A041CD78DD50075C141 /* Pin.swift in Sources */,
 				21C739F51CD78CFA0075C141 /* Virtual_Tourist.xcdatamodeld in Sources */,
 				212F59BE1D181D0E00475C4E /* Constants.swift in Sources */,

@@ -82,7 +82,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             let results = try stack.context.executeFetchRequest(request) as! [Pin]
             if results.count > 0 {
                 for result in results {
-                    print("result coordinates are: (\(result.lat), \(result.lon)) while annotation coordinates are: (\(annotation.coordinate.latitude), \(annotation.coordinate.longitude))")
+//                    print("result coordinates are: (\(result.lat), \(result.lon)) while annotation coordinates are: (\(annotation.coordinate.latitude), \(annotation.coordinate.longitude))")
                     if result.lat == annotation.coordinate.latitude && result.lon == annotation.coordinate.longitude {
                         let controller = storyboard!.instantiateViewControllerWithIdentifier("PictureViewController") as! PictureViewController
                         // Get the region to transfert
@@ -109,8 +109,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                     }
                 }
             }  else {
-                print("No data found in Core Data: load data from Flickr")
-                // TODO: add code to fetch data from Flickr
+                print("No data found in Core Data")
                 return
             }
         } catch let error as NSError {
@@ -164,7 +163,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             // Create an annotation
             let annotation = MKPointAnnotation()
             annotation.coordinate = locationCoordinate
-            print("annotation added with coordinates: (\(annotation.coordinate.latitude), \(annotation.coordinate.longitude))")
+//            print("annotation added with coordinates: (\(annotation.coordinate.latitude), \(annotation.coordinate.longitude))")
             
 //            print("Lat: \(locationCoordinate.latitude), lon: \(locationCoordinate.longitude)")
             let pin = Pin(annotation: annotation, context: stack.context)
