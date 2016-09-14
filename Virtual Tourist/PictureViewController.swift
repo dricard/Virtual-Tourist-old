@@ -98,6 +98,8 @@ class PictureViewController: UIViewController {
                             }
                             
                             self.photos = photos
+                            self.collectionView?.reloadData()
+
                         }
                     }
             
@@ -124,7 +126,7 @@ class PictureViewController: UIViewController {
         fetchRequest.predicate = NSPredicate(format: "pin = %@", pin!)
         
         do {
-            results = try stack.context.executeRequest(fetchRequest) as? [Photo]
+            results = try stack.context.executeFetchRequest(fetchRequest) as! [Photo]
         } catch let error1 as NSError {
             error = error1
             results = nil
@@ -180,7 +182,8 @@ extension PictureViewController: UICollectionViewDataSource {
     // MARK: - CollectionViewController subclass required methods
     
     func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
-        return (self.fetchedResultsController.sections?.count)!
+//        return (self.fetchedResultsController.sections?.count)!
+        return 0
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
