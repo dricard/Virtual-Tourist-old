@@ -14,8 +14,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     // MARK: - Properties
     
-    let longPressRec = UILongPressGestureRecognizer()
-    let stack = CoreDataStack.sharedInstance()
+   let longPressRec = UILongPressGestureRecognizer()
+   let stack = CoreDataStack.sharedInstance()
+   let context = CoreDataStack.sharedInstance().persistentContainer.viewContext
 
     // MARK: - Outlets
     
@@ -77,13 +78,13 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         let annotation = MKPointAnnotation()
         annotation.coordinate = (view.annotation?.coordinate)!
         
-        let request = NSFetchRequest(entityName: "Pin")
+        let request = NSFetchRequest<Pin>(entityName: "Pin")
         do {
-            let results = try stack.context.fetch(request) as! [Pin]
+            let results = try context.fetch(request) as! [Pin]
             if results.count > 0 {
                 for result in results {
 //                    print("result coordinates are: (\(result.lat), \(result.lon)) while annotation coordinates are: (\(annotation.coordinate.latitude), \(annotation.coordinate.longitude))")
-                    if result.lat == annotation.coordinate.latitude && result.lon == annotation.coordinate.longitude {
+                    if Double(result.lat) == annotation.coordinate.latitude && Double(result.lon) == annotation.coordinate.longitude {
                         let controller = storyboard!.instantiateViewController(withIdentifier: "PictureViewController") as! PictureViewController
                         // Get the region to transfert
                         let longitude = annotation.coordinate.longitude
@@ -166,8 +167,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 //            print("annotation added with coordinates: (\(annotation.coordinate.latitude), \(annotation.coordinate.longitude))")
             
 //            print("Lat: \(locationCoordinate.latitude), lon: \(locationCoordinate.longitude)")
-            let pin = Pin(annotation: annotation, context: stack.context)
-            stack.save()
+            let pin = Pin(annotation: annotation, context: context)
+            stack.saveContext()
             mapView.addAnnotation(annotation)
         }
     }
@@ -197,8 +198,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     // A convenient property
     var filePath : String {
         let manager = FileManager.default
-        let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first! as URL
-        return url.URLByAppendingPathComponent("mapRegionArchive").path!
+        let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        return url.appendingPathComponent("mapRegionArchive").path
     }
 
     func saveMapRegion() {

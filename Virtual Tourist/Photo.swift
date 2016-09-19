@@ -27,7 +27,7 @@ class Photo: ManagedObject {
         super.init(entity: entity, insertInto: context)
     }
     
-    init(dictionary: [String:AnyObject], context: NSManagedObjectContext) {
+    init(dictionary: [String:Any], context: NSManagedObjectContext) {
         
         // Core Data
         if let entity = NSEntityDescription.entity(forEntityName: Photo.entityName, in: context) {
