@@ -41,17 +41,17 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
     }
     
-    override func viewWillDisappear(animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         // We're going to another view, let's save the current state.
         saveMapRegion()
     }
     
     // MARK: - MapView Delegates
     
-    func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         let reuseId = "pin"
         
-        var pinView = mapView.dequeueReusableAnnotationViewWithIdentifier(reuseId) as? MKPinAnnotationView
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKPinAnnotationView
         
         if let pin = pinView {
             pin.annotation = annotation
@@ -59,7 +59,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
             pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView!.canShowCallout = false // was true
-            pinView!.pinTintColor = UIColor.blackColor()
+            pinView!.pinTintColor = UIColor.black
 //            pinView!.rightCalloutAccessoryView = UIButton(type: .DetailDisclosure)
         }
         
@@ -67,24 +67,24 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
     }
     
-    func mapView(mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
     
         saveMapRegion()
         
     }
     
-    func mapView(mapView: MKMapView, didSelectAnnotationView view: MKAnnotationView) {
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         let annotation = MKPointAnnotation()
         annotation.coordinate = (view.annotation?.coordinate)!
         
         let request = NSFetchRequest(entityName: "Pin")
         do {
-            let results = try stack.context.executeFetchRequest(request) as! [Pin]
+            let results = try stack.context.fetch(request) as! [Pin]
             if results.count > 0 {
                 for result in results {
 //                    print("result coordinates are: (\(result.lat), \(result.lon)) while annotation coordinates are: (\(annotation.coordinate.latitude), \(annotation.coordinate.longitude))")
                     if result.lat == annotation.coordinate.latitude && result.lon == annotation.coordinate.longitude {
-                        let controller = storyboard!.instantiateViewControllerWithIdentifier("PictureViewController") as! PictureViewController
+                        let controller = storyboard!.instantiateViewController(withIdentifier: "PictureViewController") as! PictureViewController
                         // Get the region to transfert
                         let longitude = annotation.coordinate.longitude
                         let latitude = annotation.coordinate.latitude
@@ -101,7 +101,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                         controller.focusRegion = focusRegion
                         controller.pin = result
                         // if not part of a navigation stack, use this
-                        presentViewController(controller, animated: true, completion: nil)
+                        present(controller, animated: true, completion: nil)
                         // if part of a navigation stack, use this instead
                         //        showViewController(controller, sender: self)
                         
@@ -117,12 +117,12 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
-    func mapView(mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
 //        print("in calloutAccessoryControlTapped")
 
 //        let controller = storyboard!.instantiateViewControllerWithIdentifier("PictureViewController") as! PictureViewController
 
-        let controller = storyboard!.instantiateViewControllerWithIdentifier("PictureViewController") as! PictureViewController
+        let controller = storyboard!.instantiateViewController(withIdentifier: "PictureViewController") as! PictureViewController
 
         // Get the region to transfert
         let longitude = view.annotation!.coordinate.longitude
@@ -140,7 +140,7 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         controller.focusRegion = focusRegion
         controller.pin = view.annotation as! Pin
         // if not part of a navigation stack, use this
-        presentViewController(controller, animated: true, completion: nil)
+        present(controller, animated: true, completion: nil)
         // if part of a navigation stack, use this instead
 //        showViewController(controller, sender: self)
 
@@ -150,15 +150,15 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     
     // MARK: - User Actions
     
-    @IBAction func userLongPressed(sender: AnyObject) {
+    @IBAction func userLongPressed(_ sender: AnyObject) {
         
 
-        if longPressRec.state == UIGestureRecognizerState.Began {
+        if longPressRec.state == UIGestureRecognizerState.began {
             // Get the location of the longpress in mapView
-            let location = sender.locationInView(mapView)
+            let location = sender.location(in: mapView)
             
             // Get the map coordinate from the point pressed on the map
-            let locationCoordinate = mapView.convertPoint(location, toCoordinateFromView: mapView)
+            let locationCoordinate = mapView.convert(location, toCoordinateFrom: mapView)
             
             // Create an annotation
             let annotation = MKPointAnnotation()
@@ -176,9 +176,9 @@ class MapViewController: UIViewController, MKMapViewDelegate {
 
     
     // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 
-        guard let nc = segue.destinationViewController as? UINavigationController,
+        guard let nc = segue.destination as? UINavigationController,
             let vc = nc.viewControllers.first as? PictureViewController
             else { fatalError("wrong view controller type") }
         vc.pin = sender as! Pin
@@ -196,8 +196,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     // Here we use the same filePath strategy for persisting the mapView state
     // A convenient property
     var filePath : String {
-        let manager = NSFileManager.defaultManager()
-        let url = manager.URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first! as NSURL
+        let manager = FileManager.default
+        let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first! as URL
         return url.URLByAppendingPathComponent("mapRegionArchive").path!
     }
 
@@ -222,11 +222,11 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         NSKeyedArchiver.archiveRootObject(dictionary, toFile: filePath)
     }
     
-    func restoreMapRegion(animated: Bool) {
+    func restoreMapRegion(_ animated: Bool) {
         
         // if we can unarchive a dictionary, we will use it to set the map back to its
         // previous center and span
-        if let regionDictionary = NSKeyedUnarchiver.unarchiveObjectWithFile(filePath) as? [String : AnyObject] {
+        if let regionDictionary = NSKeyedUnarchiver.unarchiveObject(withFile: filePath) as? [String : AnyObject] {
             
             let longitude = regionDictionary["longitude"] as! CLLocationDegrees
             let latitude = regionDictionary["latitude"] as! CLLocationDegrees

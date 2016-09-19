@@ -18,10 +18,10 @@ class FlickrAPI: NSObject {
     static let flickrAPIKey = API_KEY
     static let flickrSecret = API_SECRET
     
-    static let session = NSURLSession.sharedSession()
+    static let session = URLSession.shared
     let stack = CoreDataStack.sharedInstance()
 
-    static func sendRequest(pin: Pin, completionHandlerForRequest: (photos: [Photo]?, success: Bool, error: NSError?) -> Void) {
+    static func sendRequest(_ pin: Pin, completionHandlerForRequest: @escaping (_ photos: [Photo]?, _ success: Bool, _ error: NSError?) -> Void) {
 
         // 1. create the parameters dictionary used by URLByAppendingQueryParameters
         let URLParams = [
@@ -36,23 +36,23 @@ class FlickrAPI: NSObject {
             ]
         
         // 2. Build URL
-        guard var URL = NSURL(string: Constants.Flickr.FlickrBaseURL) else {return}
+        guard var URL = URL(string: Constants.Flickr.FlickrBaseURL) else {return}
         URL = URL.URLByAppendingQueryParameters(URLParams)
         // DEBUG
         print(URL)
         // 3. configure the request
-        let request = NSMutableURLRequest(URL: URL)
-        request.HTTPMethod = "GET"
+        let request = NSMutableURLRequest(url: URL)
+        request.httpMethod = "GET"
         
         // Headers
         
 //        request.addValue("xb=401957", forHTTPHeaderField: "Cookie")
         
         // 4. Make the request
-        let task = session.dataTaskWithRequest(request, completionHandler: { (data: NSData?, response: NSURLResponse?, error: NSError?) -> Void in
+        let task = session.dataTask(with: request, completionHandler: { (data: Data?, response: URLResponse?, error: NSError?) -> Void in
             
             // Utility function
-            func sendError(error: String, code: Int) {
+            func sendError(_ error: String, code: Int) {
                 print("error: \(error), code: \(code)")
                 // Build an informative NSError to return
                 let userInfo = [NSLocalizedDescriptionKey : error]
@@ -66,8 +66,8 @@ class FlickrAPI: NSObject {
             }
 
             // GUARD: did we get a successful 2XX response?
-            guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
-                let theStatusCode = (response as? NSHTTPURLResponse)?.statusCode
+            guard let statusCode = (response as? HTTPURLResponse)?.statusCode , statusCode >= 200 && statusCode <= 299 else {
+                let theStatusCode = (response as? HTTPURLResponse)?.statusCode
             sendError("Your request to Flickr returned a status code outside the 200 range: \(theStatusCode)", code: Constants.Flickr.requestError)
             return
             }
@@ -81,7 +81,7 @@ class FlickrAPI: NSObject {
             // 5. Parse the data
             var parsedResult: AnyObject!
             do {
-                parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+                parsedResult = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
             } catch {
                 sendError("Could not parse the data returned by Flickr: \(data)", code: Constants.Flickr.parseError)
             }
@@ -127,25 +127,25 @@ extension Dictionary : URLQueryParameterStringConvertible {
         var parts: [String] = []
         for (key, value) in self {
             let part = NSString(format: "%@=%@",
-                                String(key).stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!,
-                                String(value).stringByAddingPercentEncodingWithAllowedCharacters(NSCharacterSet.URLQueryAllowedCharacterSet())!)
+                                String(describing: key).addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!,
+                                String(describing: value).addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)!)
             parts.append(part as String)
         }
-        return parts.joinWithSeparator("&")
+        return parts.joined(separator: "&")
     }
     
 }
 
-extension NSURL {
+extension URL {
 
     /// Creates a new URL by adding the given query parameters.
     /// - parameters:
     ///     - parametersDictionary The query parameter dictionary to add.
     /// - returns:
     ///     - A new NSURL.
-    func URLByAppendingQueryParameters(parametersDictionary : Dictionary<String, String>) -> NSURL {
+    func URLByAppendingQueryParameters(_ parametersDictionary : Dictionary<String, String>) -> URL {
         let URLString : NSString = NSString(format: "%@?%@", self.absoluteString, parametersDictionary.queryParameters)
-        return NSURL(string: URLString as String)!
+        return URL(string: URLString as String)!
     }
 }
 

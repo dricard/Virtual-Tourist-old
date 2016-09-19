@@ -9,7 +9,7 @@
 import CoreData
 
 // useful because of the way generic types are handled
-public class ManagedObject: NSManagedObject {
+open class ManagedObject: NSManagedObject {
 }
 
 // Our model(s) class(es) will implement this and make sure they provide proper

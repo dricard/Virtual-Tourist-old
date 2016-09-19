@@ -27,11 +27,11 @@ class Pin: NSManagedObject {
     
     convenience init(annotation: MKPointAnnotation, context: NSManagedObjectContext) {
         
-        if let entity = NSEntityDescription.entityForName("Pin", inManagedObjectContext: context) {
-            self.init(entity: entity, insertIntoManagedObjectContext: context)
+        if let entity = NSEntityDescription.entity(forEntityName: "Pin", in: context) {
+            self.init(entity: entity, insertInto: context)
 
-            self.lat = Double(annotation.coordinate.latitude)
-            self.lon = Double(annotation.coordinate.longitude)
+            self.lat = NSNumber(Double(annotation.coordinate.latitude))
+            self.lon = NSNumber(Double(annotation.coordinate.longitude))
 //            let tempCoordinates = CLLocationCoordinate2DMake(Double(annotation.coordinate.latitude), Double(annotation.coordinate.longitude))
 //            self.coordinate = tempCoordinates
 //            self.title = annotation.title

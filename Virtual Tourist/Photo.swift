@@ -23,15 +23,15 @@ class Photo: ManagedObject {
     @NSManaged var imagePath: String?
     @NSManaged var pin: Pin?
     
-    override init(entity: NSEntityDescription, insertIntoManagedObjectContext context: NSManagedObjectContext?) {
-        super.init(entity: entity, insertIntoManagedObjectContext: context)
+    override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
+        super.init(entity: entity, insertInto: context)
     }
     
     init(dictionary: [String:AnyObject], context: NSManagedObjectContext) {
         
         // Core Data
-        if let entity = NSEntityDescription.entityForName(Photo.entityName, inManagedObjectContext: context) {
-            super.init(entity: entity, insertIntoManagedObjectContext: context)
+        if let entity = NSEntityDescription.entity(forEntityName: Photo.entityName, in: context) {
+            super.init(entity: entity, insertInto: context)
             
             // Dictionary
             title = dictionary[Keys.Title] as! String
@@ -62,9 +62,9 @@ class Photo: ManagedObject {
     /// - returns:
     ///    - a valid url in a String, or
     ///    - `nil` if unsuccessful.
-    private func validateURL(url: String) -> String? {
+    fileprivate func validateURL(_ url: String) -> String? {
         
-        let types: NSTextCheckingType = .Link
+        let types: NSTextCheckingResult.CheckingType = .link
         
         var detector: AnyObject!
         do {
@@ -78,11 +78,11 @@ class Photo: ManagedObject {
             return nil
         }
         
-        let matches = detect.matchesInString(url, options: .ReportCompletion, range: NSMakeRange(0, url.characters.count))
+        let matches = detect.matches(in: url, options: .reportCompletion, range: NSMakeRange(0, url.characters.count))
         
         if !matches.isEmpty {
-            if let validURL = matches[0].URL {
-                return String(validURL)
+            if let validURL = matches[0].url {
+                return String(describing: validURL)
             } else {
                 return nil
             }

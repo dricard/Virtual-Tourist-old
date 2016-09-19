@@ -28,7 +28,7 @@ class PictureViewController: UIViewController {
     
     // MARK: - Fetched Results Controller
     
-    lazy var fetchedResultsController: NSFetchedResultsController = {
+    lazy var fetchedResultsController: NSFetchedResultsController = { () -> <<error type>> in 
         
         // Create the fetch request
         let fetchRequest = NSFetchRequest(entityName: "Photo")
@@ -44,7 +44,7 @@ class PictureViewController: UIViewController {
         
         // Return the fetched results controller. It will be the value of the lazy variable
         return fetchedResultsController
-    } ()
+    }()
     
     // MARK: - Outlets
     
@@ -54,7 +54,7 @@ class PictureViewController: UIViewController {
 
     // MARK: - Lyfe Cycle
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         setFlowLayout()
         collectionView?.reloadData()
@@ -116,8 +116,8 @@ class PictureViewController: UIViewController {
         var error: NSError? = nil
         var results: [Photo]?
         
-        let fetchRequest = NSFetchRequest()
-        let entity = NSEntityDescription.entityForName("Photo", inManagedObjectContext: stack.context)
+        let fetchRequest: NSFetchRequestResult = NSFetchRequest() as! [Photo] as! NSFetchRequestResult
+        let entity = NSEntityDescription.entity(forEntityName: "Photo", in: stack.context)
         fetchRequest.entity = entity
         
         let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
@@ -126,7 +126,7 @@ class PictureViewController: UIViewController {
         fetchRequest.predicate = NSPredicate(format: "pin = %@", pin!)
         
         do {
-            results = try stack.context.executeFetchRequest(fetchRequest) as! [Photo]
+            results = try stack.context.fetch(fetchRequest) as! [Photo]
         } catch let error1 as NSError {
             error = error1
             results = nil
@@ -168,11 +168,11 @@ class PictureViewController: UIViewController {
         
         flowLayout.minimumInteritemSpacing = space
         flowLayout.minimumLineSpacing = space
-        flowLayout.itemSize = CGSizeMake(dimensionX, dimensionY)
+        flowLayout.itemSize = CGSize(width: dimensionX, height: dimensionY)
         
     }
     
-    override func didRotateFromInterfaceOrientation(fromInterfaceOrientation: UIInterfaceOrientation) {
+    override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
         setFlowLayout()
     }
 }
@@ -181,29 +181,29 @@ extension PictureViewController: UICollectionViewDataSource {
 
     // MARK: - CollectionViewController subclass required methods
     
-    func numberOfSectionsInCollectionView(collectionView: UICollectionView) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
 //        return (self.fetchedResultsController.sections?.count)!
         return 0
     }
     
-    func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 
         return fetchedResultsController.sections![section].numberOfObjects
     }
     
-    func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         // Create a cell
-        let cell = collectionView.dequeueReusableCellWithReuseIdentifier("PhotoCell", forIndexPath: indexPath) as! PhotoCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as! PhotoCell
         
         // get the photo information from Core Data
-        let photo = fetchedResultsController.objectAtIndexPath(indexPath) as! Photo
+        let photo = fetchedResultsController.object(at: indexPath) as! Photo
         
         // Configure the cell
 
         if let imagePath = photo.imagePath {
-            let imageURL = NSURL(string: imagePath)
-            if let imageData = NSData(contentsOfURL: imageURL!) {
+            let imageURL = URL(string: imagePath)
+            if let imageData = try? Data(contentsOf: imageURL!) {
                 cell.imageView.image = UIImage(data: imageData)
             }
         } else {
