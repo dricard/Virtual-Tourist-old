@@ -22,29 +22,8 @@ class PictureViewController: UIViewController {
    var screenWidth: CGFloat = 0
    var screenHeight: CGFloat = 0
    let context = CoreDataStack.sharedInstance().persistentContainer.viewContext
-   
-   // MARK: - Outlets
-   
-   
-   // MARK: - Fetched Results Controller
-   
-   func fetchedResultsController() -> NSFetchedResultsController<Photo> {
-      
-      // Create the fetch request
-      let fetchRequest = NSFetchRequest<Photo>(entityName: "Photo")
-      
-      // Add a sort descriptor.
-      fetchRequest.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-      
-      // Add a predicate (if relation is to-many: one actor has many movie objects)
-      fetchRequest.predicate = NSPredicate(format: "pin == %@", self.pin!)
-      
-      // Create the Fetched Results Controller
-      let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
-      
-      // Return the fetched results controller. It will be the value of the lazy variable
-      return fetchedResultsController
-   }
+   let stack = CoreDataStack.sharedInstance()
+   var frc: NSFetchedResultsController<Photo>?
    
    // MARK: - Outlets
    
@@ -77,14 +56,28 @@ class PictureViewController: UIViewController {
       
       mapView.addAnnotation(annotation)
       
-      photos = fetchAllPhotos()
+      collectionView.delegate = self
+      collectionView.dataSource = self
+      
+      self.frc = fetchedResultsController()
+      
+      if let pin = pin {
+         if pin.photos.count == 0 {
+            print("We don't have any photos in our Pin")
+            photos = fetchAllPhotos()
+            print("Photos count on return from fetchAllPhotos is : \(photos.count)")
+         } else {
+            print("There are photos in our pin!")
+            photos = pin.photos as! [Photo]
+         }
+      }
       if photos.isEmpty {
          print("We DON'T have photos at this location, searching API")
          /* DEBUG */
          print("Sending request to Flickr API")
          if let pin = pin {
             FlickrAPI.sendRequest(pin) { (photos, success, error) in
-               print("request completed")
+               print("FlickrAPI request completed - completion handler executing")
                
                // make sure the request was succellful
                guard success else {
@@ -97,8 +90,15 @@ class PictureViewController: UIViewController {
                   return
                }
                
-               self.photos = photos
-               self.collectionView?.reloadData()
+               DispatchQueue.main.async() {
+                  self.photos = photos.map() {(dictionary: [String: Any]) -> Photo in
+                     let photo = Photo(dictionary: dictionary, context: self.context)
+                     photo.pin = self.pin
+                     self.stack.saveContext()
+                     return photo
+                  }
+                  print("Executed the async closure. Number of photos is \(self.photos.count)")
+               }
                
             }
          }
@@ -106,7 +106,27 @@ class PictureViewController: UIViewController {
       } else {
          print("We have photos at this location, displaying")
       }
+   }
+
+   // MARK: - Fetched Results Controller
+   
+   func fetchedResultsController() -> NSFetchedResultsController<Photo> {
       
+      // Create the fetch request
+      let fetchRequest = NSFetchRequest<Photo>(entityName: "Photo")
+      fetchRequest.returnsObjectsAsFaults = false
+      
+      // Add a sort descriptor.
+      fetchRequest.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+      
+      // Add a predicate (if relation is to-many: one actor has many movie objects)
+      fetchRequest.predicate = NSPredicate(format: "pin == %@", self.pin!)
+      
+      // Create the Fetched Results Controller
+      let fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+      
+      // Return the fetched results controller. It will be the value of the lazy variable
+      return fetchedResultsController
    }
    
    // MARK: - Utilities
@@ -119,14 +139,18 @@ class PictureViewController: UIViewController {
       let fetchRequest = NSFetchRequest<Photo>()
       let entity = NSEntityDescription.entity(forEntityName: "Photo", in: context)
       fetchRequest.entity = entity
+      fetchRequest.returnsObjectsAsFaults = false
       
       let sortDescriptor = NSSortDescriptor(key: "title", ascending: true)
       fetchRequest.sortDescriptors = [sortDescriptor]
       
-      fetchRequest.predicate = NSPredicate(format: "pin = %@", pin!)
+      fetchRequest.predicate = NSPredicate(format: "pin == %@", pin!)
       
       do {
-         results = try context.fetch(fetchRequest) as! [Photo]
+         results = try context.fetch(fetchRequest)
+         for result in results! {
+            print("\(result.title)")
+         }
       } catch let error1 as NSError {
          error = error1
          results = nil
@@ -139,8 +163,10 @@ class PictureViewController: UIViewController {
       }
       
       if results == nil {
+         print("Returning empty array: results is nil at this point")
          return [Photo]()    // send back an empty array
       } else {
+         print("Returning results with photos!")
          return results!
       }
    }
@@ -182,13 +208,20 @@ extension PictureViewController: UICollectionViewDataSource {
    // MARK: - CollectionViewController subclass required methods
    
    func numberOfSections(in collectionView: UICollectionView) -> Int {
-      //        return (self.fetchedResultsController.sections?.count)!
-      return 0
+//      let sections = self.frc.sections?.count ?? 0
+//      return sections
+      return 1
    }
    
    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-      
-      return fetchedResultsController().sections![section].numberOfObjects
+      if let fetchedObjects = frc!.fetchedObjects {
+         let objects: Int = fetchedObjects.count
+         print("fetched objects is NOT nil in collectionView numberOfItemsInSection")
+         return objects
+      } else {
+         print("fetched objects is nil in collectionView numberOfItemsInSection")
+         return 0
+      }
    }
    
    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -197,7 +230,7 @@ extension PictureViewController: UICollectionViewDataSource {
       let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PhotoCell", for: indexPath) as! PhotoCell
       
       // get the photo information from Core Data
-      let photo = fetchedResultsController().object(at: indexPath) as! Photo
+      let photo = frc!.object(at: indexPath)
       
       // Configure the cell
       
@@ -205,6 +238,8 @@ extension PictureViewController: UICollectionViewDataSource {
          let imageURL = URL(string: imagePath)
          if let imageData = try? Data(contentsOf: imageURL!) {
             cell.imageView.image = UIImage(data: imageData)
+         } else {
+            print("Unable to get imageData from imageURL")
          }
       } else {
          cell.imageView.image = UIImage(named: "cube")

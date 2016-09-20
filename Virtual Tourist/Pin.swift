@@ -23,7 +23,7 @@ class Pin: NSManagedObject {
    
    @NSManaged var lat: NSNumber
    @NSManaged var lon: NSNumber
-   @NSManaged var photos: NSSet
+   @NSManaged var photos: NSArray
    
    convenience init(annotation: MKPointAnnotation, context: NSManagedObjectContext) {
       

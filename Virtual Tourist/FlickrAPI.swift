@@ -21,7 +21,7 @@ class FlickrAPI: NSObject {
    static let session = URLSession.shared
    static let context = CoreDataStack.sharedInstance().persistentContainer.viewContext
    
-   static func sendRequest(_ pin: Pin, completionHandlerForRequest: @escaping (_ photos: [Photo]?, _ success: Bool, _ error: NSError?) -> Void) {
+   static func sendRequest(_ pin: Pin, completionHandlerForRequest: @escaping (_ photos: [[String:Any]]?, _ success: Bool, _ error: NSError?) -> Void) {
       
       // 1. create the parameters dictionary used by URLByAppendingQueryParameters
       let URLParams = [
@@ -82,23 +82,15 @@ class FlickrAPI: NSObject {
          
          
          let parsedResult = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String:Any]
-         //            } catch {
-         //                sendError("Could not parse the data returned by Flickr: \(data)", code: Constants.Flickr.parseError)
-         //            }
-         
+
          // 6. Use the data
          
-         // GUARD: get the photos from the data
-         
-         //         for case let result in parsedResult??[Constants.Flickr.Photos]![Constants.Flickr.Photo]! {
-         //
-         //         }
-         
-         // GUARD: get the photos dictionary from the parsed data
+         // GUARD: get the photos root object from the parsed data
          guard let photoElement = parsedResult??[Constants.Flickr.Photos] as? [String:Any] else {
             sendError("Could not parse photos from the data", code: Constants.Flickr.noPhotoDataError)
             return
          }
+         // Now get the photos array from that root object
          guard let photoArray = photoElement[Constants.Flickr.Photo] as? [[String:Any]] else {
             sendError("Could not parse photo from the data", code: Constants.Flickr.noPhotoDataError)
             return
@@ -106,16 +98,16 @@ class FlickrAPI: NSObject {
          
          print("We got to HERE 001")
          
-         var photos = [Photo]()
-         
-         for dictionary in photoArray {
-            let photo = Photo(dictionary: dictionary, context: context)
-            photos.append(photo)
-         }
+//         var photos = [Photo]()
+//         
+//         for dictionary in photoArray {
+//            let photo = Photo(dictionary: dictionary, context: context)
+//            photos.append(photo)
+//         }
          
          print("We got to HERE 002")
          
-         completionHandlerForRequest(photos, true, nil)
+         completionHandlerForRequest(photoArray, true, nil)
          
          return()
          
